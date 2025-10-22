@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  video-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: eduhub-video-service
+    ports:
+      - "3003:3003"
+    environment:
+      - NODE_ENV=development
+      - PORT=3003
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=eduhub_videos
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - AZURE_STORAGE_ACCOUNT_NAME=${AZURE_STORAGE_ACCOUNT_NAME}
+      - AZURE_STORAGE_ACCOUNT_KEY=${AZURE_STORAGE_ACCOUNT_KEY}
+      - AZURE_STORAGE_CONTAINER_NAME=videos
+      - JWT_SECRET=${JWT_SECRET:-dev_secret_key_change_in_production}
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - ./uploads:/app/uploads
+    networks:
+      - eduhub-network
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: eduhub-video-postgres
+    environment:
+      - POSTGRES_DB=eduhub_videos
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - eduhub-network
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: eduhub-video-redis
+    ports:
+      - "6380:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - eduhub-network
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+
+volumes:
+  postgres-data:
+  redis-data:
+
+networks:
+  eduhub-network:
+    driver: bridge
