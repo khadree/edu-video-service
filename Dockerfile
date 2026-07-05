@@ -29,12 +29,12 @@ RUN apk add --no-cache ffmpeg
 
 # Strip npm's own CLI + yarn + corepack — not needed at runtime,
 # and their bundled deps are what's driving the Node.js CVEs
-RUN rm -rf /usr/local/lib/node_modules/npm \
-           /usr/local/lib/node_modules/corepack \
-           /opt/yarn-v* \
-    && rm -f /usr/local/bin/npm /usr/local/bin/npx \
-             /usr/local/bin/yarn /usr/local/bin/yarnpkg \
-             /usr/local/bin/corepack
+# RUN rm -rf /usr/local/lib/node_modules/npm \
+#            /usr/local/lib/node_modules/corepack \
+#            /opt/yarn-v* \
+#     && rm -f /usr/local/bin/npm /usr/local/bin/npx \
+#              /usr/local/bin/yarn /usr/local/bin/yarnpkg \
+#              /usr/local/bin/corepack
 
 # Create app user
 RUN addgroup -g 1001 -S nodejs && \
