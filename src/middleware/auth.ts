@@ -45,7 +45,7 @@ export const authenticate = (req: AuthRequest, res: Response, next: NextFunction
         role: decoded.role,
       };
 
-      next();
+      return next();
     } catch (error) {
       return res.status(401).json({
         success: false,
@@ -76,7 +76,7 @@ export const authorize = (...roles: string[]) => {
       });
     }
 
-    next();
+    return next();
   };
 };
 
