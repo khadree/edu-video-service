@@ -27,7 +27,6 @@ FROM node:22-alpine
 # Install ffmpeg for video metadata extraction
 RUN apk add --no-cache ffmpeg
 
-
 # Strip npm's own CLI + yarn + corepack — not needed at runtime,
 # and their bundled deps are what's driving the Node.js CVEs
 RUN rm -rf /usr/local/lib/node_modules/npm \
