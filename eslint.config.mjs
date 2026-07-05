@@ -21,7 +21,8 @@ export default [
       "prefer-const": "warn",
       "@typescript-eslint/no-unused-vars": "warn",
       "no-undef": "off",
-      "@typescript-eslint/no-explicit-any": "off"
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-empty-object-type": "off"
     },
   },
 ];
