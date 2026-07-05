@@ -1,7 +1,7 @@
 # Multi-stage build for production
 
 # Stage 1: Build
-FROM node:18-alpine AS builder
+FROM node:22-alpine AS builder
 
 WORKDIR /app
 
@@ -22,10 +22,20 @@ RUN npm run build
 RUN npm prune --production
 
 # Stage 2: Production
-FROM node:18-alpine
+FROM node:22-alpine
 
 # Install ffmpeg for video metadata extraction
 RUN apk add --no-cache ffmpeg
+
+
+# Strip npm's own CLI + yarn + corepack — not needed at runtime,
+# and their bundled deps are what's driving the Node.js CVEs
+RUN rm -rf /usr/local/lib/node_modules/npm \
+           /usr/local/lib/node_modules/corepack \
+           /opt/yarn-v* \
+    && rm -f /usr/local/bin/npm /usr/local/bin/npx \
+             /usr/local/bin/yarn /usr/local/bin/yarnpkg \
+             /usr/local/bin/corepack
 
 # Create app user
 RUN addgroup -g 1001 -S nodejs && \
